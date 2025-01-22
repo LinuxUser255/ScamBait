@@ -59,7 +59,6 @@ class ScamBait:
         # On the openToWork page, find a post that has been commented on by a fake user.
         pass
 
-
     def get_fakeuser_url(self):
         with open(os.path.join(os.path.dirname(__file__), "ScamerProfiles/fake_profiles.txt"), 'r') as f:
             fake_profiles = f.read().strip().splitlines()
@@ -71,20 +70,19 @@ class ScamBait:
             print("No fake profiles found in the file.")
 
     def report_fake_user(self):
-        # This Needs refining. Not successful as it currently stands.
-        # triple_dots_xpath Use regular expression to select id="ember *" to match any id.
-        # triple_dots_xpath = '"//*[@id="ember69-profile-overflow-action"]/svg"'
-        triple_dots_xpath = '"//button[contains(@id, "ember* profile-overflow-action")]/svg"'
-        # select andy profile-overflow-action regardless of id number
-        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, triple_dots_xpath))).click()
-        # select report profile from the dropdown menu. Use regular expression to select id="ember *" to match any id.
-        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[contains(@id, "ember*")]'))).click()
-        # select the report profile option. Use regular expression to select id="ember *" to match any id.
-        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[contains(@id, "ember*")]'))).click()
-        # click on the report profile option. triple_dots_xpath
-        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, triple_dots_xpath))).click()
-        print("Fake profile reported.")
+        try:
+            more_button_xpath = '//*[@id="ember69-profile-overflow-action"]/span'
+            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, more_button_xpath))).click()
 
+            triple_dots_xpath = '//*[@id="ember69-profile-overflow-action"]/span/button'
+            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, triple_dots_xpath))).click()
+            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, triple_dots_xpath))).click()
+            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, triple_dots_xpath))).click()
+
+            report_button_xpath = '//*[@id="ember76"]/span'
+            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, report_button_xpath))).click()
+        except Exception as e:
+            print(f"An error occurred while reporting fake user: {str(e)}")
 
     def run_bot(self):
         """The methods are called sequentially."""
@@ -94,7 +92,7 @@ class ScamBait:
         self.get_fakeuser_url()
         self.report_fake_user()
         browser_persist()
-      
+
 
 start_time = time.time()
 # keep the browser open indefinitely
