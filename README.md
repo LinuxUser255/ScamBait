@@ -9,6 +9,11 @@
 | ![pythoh-logo](https://github.com/user-attachments/assets/de8fc593-49bc-47ab-95a2-b9757a26fedf) | ![python3 11](https://github.com/user-attachments/assets/657c87f0-e14e-4012-8344-963082712f78) |
 | --- | --- |
 | ![selenium-logo](https://github.com/user-attachments/assets/362d87ae-3a3b-4a62-acbd-bac810c05024) | ![gpl-v3](https://github.com/user-attachments/assets/1967a3cb-c851-47f4-8e04-f96133a3e7e2) |
+| --- | --- | 
+| ![chome-driver](https://github.com/user-attachments/assets/1f54569d-ddc4-4957-bbeb-6c8de58999c7)  |
+
+
+
 
 <br>
 
