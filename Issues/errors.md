@@ -1,4 +1,3 @@
-
 # Attempting to click the report user three dot elipsies and submit
 
 couldn't click the report user buttons. 
@@ -26,3 +25,18 @@ The most reoccuring theme.
 ```
 
 ## Other than this, everything is working fine!
+
+
+More
+
+<span>More</span>
+
+//*[@id="ember69-profile-overflow-action"]/span
+
+report_xpath = '//*[@id="ember76"]/span'
+
+```python
+def report_fake_user(self):
+```
+
+it's clicking the More button, however thats a drop down selection and it's not clicking on the report
