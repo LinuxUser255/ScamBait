@@ -1,10 +1,10 @@
-# A Scam Bait Bot
+# Scam Bait
 
-## Goes after fake profiles, reports them, and trolls them in post comment sections
-
+## A bot that goes after fake profiles, trolls & reports them.
 
 
 <br>
+
 
 | ![pythoh-logo](https://github.com/user-attachments/assets/de8fc593-49bc-47ab-95a2-b9757a26fedf) | ![python3 11](https://github.com/user-attachments/assets/657c87f0-e14e-4012-8344-963082712f78) |
 | --- | --- |
