@@ -1,4 +1,4 @@
-# Code explanations and other notes and info
+# Code explanations and other info
 
 
 ### The order of execution for the code in bait_scammer.py:
