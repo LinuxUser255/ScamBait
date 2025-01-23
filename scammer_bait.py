@@ -3,16 +3,16 @@
 import os
 import random
 import time
+import config
 
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
-import config
-
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
+# scam_bait_utils.py: Might need editing in sloving click_more_button method issues.
 from scam_bait_utils import debug_xpath
 
 
@@ -32,6 +32,9 @@ class ScamBait:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         self.driver = webdriver.Chrome(options=options)
+        self.more_button_xpath = ("//button[contains(@class, 'artdeco-dropdown__trigger') and "
+                                  "contains(@class, 'artdeco-button--secondary') and "
+                                  "contains(@aria-label, 'More actions')]//span[contains(text(), 'More')]")
 
     def sign_in(self):
         try:
@@ -58,7 +61,7 @@ class ScamBait:
     def find_posts_comments_by_fake_users(self):
         pass
 
-
+##--- Begin of get_fakeuser_url method ---- #
     def get_fakeuser_url(self):
         with open(os.path.join(os.path.dirname(__file__), "ScamerProfiles/fake_profiles.txt"), 'r') as f:
             fake_profiles = f.read().strip().splitlines()
@@ -71,46 +74,57 @@ class ScamBait:
 
     from scam_bait_utils import debug_xpath
 
-    # Debugging this step
-    def report_fake_user(self):
+# ---- End of get_fakeuser_url method ----#
+
+
+
+# ---- Begin of click_more_button method ---- #
+    def click_more_button(self):
         try:
-            # Step One: Click the 'More' button
-            more_button_xpath = "//*[starts-with(@id, 'ember') and contains(@id, '-profile-overflow-action')]"
-            print(f"Attempting to click 'More' button with XPath: {more_button_xpath}")
-            
-            # Debug the XPath
-            debug_xpath(self.driver, more_button_xpath)
-            
             more_button = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, more_button_xpath))
+                EC.element_to_be_clickable((By.XPATH, self.more_button_xpath))
             )
-            more_button.click()
-            print("'More' button clicked successfully")
-    
-            # Step Two: Wait for the dropdown menu to appear
-            time.sleep(2)
-    
-            # Step Three: Click the 'Report or block' option
-            report_button_xpath = "//div[starts-with(@id, 'ember') and contains(@class, 'artdeco-dropdown__item') and contains(@aria-label, 'Report or block')]"
-            print(f"Attempting to click 'Report or block' option with XPath: {report_button_xpath}")
-            
-            # Debug the XPath
-            debug_xpath(self.driver, report_button_xpath)
-            
-            report_button = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, report_button_xpath))
-            )
-            report_button.click()
-            print("'Report or block' option clicked successfully")
-    
-            print("Fake user reported successfully.")
+            #more_button.click() <-- using python to click the button. JS used below:
+            self.driver.execute_script("arguments[0].click();", more_button)
+            print("Successfully clicked 'More' button")
         except Exception as e:
-            print(f"An error occurred while reporting the fake user: {str(e)}")
-            # Additional debugging information
-            print(f"Current URL: {self.driver.current_url}")
-            print(f"Page source: {self.driver.page_source[:500]}...")  # Print first 500 characters of page source
+            print(f"An error occurred while clicking the 'More' button: {str(e)}")
+            print("Button visibility: Not found")
+            print("Button enabled: Not found")
+
+# ---- End of click_more_button method ---- #
 
 
+# ---- Commenting out four trouble shooting bugs in the Click more button function ---- #
+# ----Begin of Report a fake user method --- #
+#    def report_fake_user(self):
+#        try:
+#            print(f"Attempting to click 'More' button with XPath: {more_button_xpath}")
+#            more_button = WebDriverWait(self.driver, 10).until(
+#                EC.element_to_be_clickable((By.XPATH, more_button_xpath))
+#            )
+#            self.driver.execute_script("arguments[0].scrollIntoView(true);", more_button)
+#            time.sleep(1)  # Give the page a moment to settle after scrolling
+#            more_button.click()
+#            print("Successfully clicked 'More' button")
+#
+#        except Exception as e:
+#            print(f"An error occurred while reporting the fake user: {str(e)}")
+#            print(f"Current URL: {self.driver.current_url}")
+#            print(f"Page source: {self.driver.page_source[:500]}...")  # Print first 500 characters of page source
+#
+#            # Additional debugging
+#            all_buttons = self.driver.find_elements(By.TAG_NAME, "button")
+#            print(f"Total number of buttons on the page: {len(all_buttons)}")
+#            for i, button in enumerate(all_buttons[:5], 1):  # Print details of first 5 buttons
+#                print(f"Button {i}: Class: {button.get_attribute('class')}, "
+#                      f"Text: {button.text}, "
+#                      f"Aria-label: {button.get_attribute('aria-label')}")
+
+# ---- End of report_fake_user method ----#
+
+
+# -- Run the bot --- #
     def run_bot(self):
         """The methods are called sequentially."""
         self.sign_in()
@@ -118,8 +132,8 @@ class ScamBait:
         self.find_posts_comments_by_fake_users()  # This method needs to be implemented
         self.get_fakeuser_url()
         # self.fakeuser_url()
-        # self.click_more_button()
-        self.report_fake_user()  # Make sure this line is uncommented
+        self.click_more_button()
+#        self.report_fake_user()  # Make sure this line is uncommented
         browser_persist()
 
 
