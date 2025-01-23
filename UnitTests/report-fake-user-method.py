@@ -1,114 +1,89 @@
 #!/usr/bin/env python3
 
-import unittest
-from unittest.mock import MagicMock, patch
+"""
+Testing and debugging the `def click_more_button` method in scammer_bait.py
+Persistant problems with getting the bot/Selenium proper code to 
+Locate and click the 'More' button on a user's profile
+"""
 
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+import unittest
+from unittest.mock import MagicMock, patch
+from selenium.webdriver.support import expected_conditions as EC
 from scammer_bait import ScamBait
-from scam_bait_utils import debug_xpath
 
-class TestReportFakeUser(unittest.TestCase):
+class TestClickMoreButton(unittest.TestCase):
     def setUp(self):
         self.scam_bait = ScamBait()
 
-def test_click_more_button(self):
-    self.scam_bait.driver.get("https://www.linkedin.com/in/fake-profile")
-    
-    # Mock the WebDriverWait and debug_xpath functions
-    self.scam_bait.driver.find_element = MagicMock()
-    self.scam_bait.driver.find_element.return_value.click = MagicMock()
-    WebDriverWait = MagicMock()
-    debug_xpath = MagicMock()
-    
-    # Call the method
-    self.scam_bait.report_fake_user()
-    
-    # Assert that the 'More' button was clicked
-    more_button_xpath = "//*[starts-with(@id, 'ember') and contains(@id, '-profile-overflow-action')]"
-    WebDriverWait.assert_called_once_with(self.scam_bait.driver, 10)
-    WebDriverWait.return_value.until.assert_called_once_with(
-        EC.element_to_be_clickable((By.XPATH, more_button_xpath))
-    )
-    self.scam_bait.driver.find_element.return_value.click.assert_called_once()
-    
-    # Assert that debug_xpath was called
-    debug_xpath.assert_called_once_with(self.scam_bait.driver, more_button_xpath)
 
-
-def test_more_button_not_found(self):
-    self.scam_bait.driver.get = MagicMock()
-    self.scam_bait.driver.current_url = "https://www.linkedin.com/in/fake-profile"
-    
-    # Mock WebDriverWait to raise a TimeoutException
-    mock_wait = MagicMock()
-    mock_wait.until.side_effect = TimeoutException("Element not found")
-    WebDriverWait = MagicMock(return_value=mock_wait)
-    
-    # Mock debug_xpath
-    debug_xpath = MagicMock()
-    
-    with patch('scammer_bait.WebDriverWait', WebDriverWait), \
-         patch('scammer_bait.debug_xpath', debug_xpath), \
-         patch('builtins.print') as mock_print:
-        
-        self.scam_bait.report_fake_user()
-        
-        # Assert that debug_xpath was called
-        debug_xpath.assert_called_once()
-        
-        # Assert that the error message was printed
-        mock_print.assert_any_call("An error occurred while reporting the fake user: Element not found")
-        
-        # Assert that the current URL was printed
-        mock_print.assert_any_call("Current URL: https://www.linkedin.com/in/fake-profile")
-        
-        # Assert that the page source was attempted to be printed
-        mock_print.assert_any_call(f"Page source: {self.scam_bait.driver.page_source[:500]}...")
-
-
-def test_click_report_or_block_option(self):
-    self.scam_bait.driver.get = MagicMock()
-    self.scam_bait.driver.current_url = "https://www.linkedin.com/in/fake-profile"
-    
-    # Mock WebDriverWait and its until method
+# ---- Begin of Trying to locate and click the More button ---- #
+def test_click_more_button_when_present_and_clickable(self):
+    # Mock the WebDriverWait and it's until method
     mock_wait = MagicMock()
     mock_element = MagicMock()
     mock_wait.until.return_value = mock_element
-    WebDriverWait = MagicMock(return_value=mock_wait)
-    
-    # Mock debug_xpath
-    debug_xpath = MagicMock()
-    
-    # Mock time.sleep
-    time_sleep = MagicMock()
-    
-    with patch('scammer_bait.WebDriverWait', WebDriverWait), \
-         patch('scammer_bait.debug_xpath', debug_xpath), \
-         patch('time.sleep', time_sleep), \
+    self.scam_bait.driver = MagicMock()
+
+    with patch('scammer_bait.WebDriverWait', return_value=mock_wait), \
+         patch('scammer_bait.debug_xpath') as mock_debug_xpath, \
          patch('builtins.print') as mock_print:
-        
-        self.scam_bait.report_fake_user()
-        
-        # Assert that the 'More' button was clicked
-        mock_element.click.assert_called()
-        
-        # Assert that time.sleep was called
-        time_sleep.assert_called_once_with(2)
-        
-        # Assert that the 'Report or block' option was clicked
-        report_button_xpath = "//div[starts-with(@id, 'ember') and contains(@class, 'artdeco-dropdown__item') and contains(@aria-label, 'Report or block')]"
-        WebDriverWait.return_value.until.assert_called_with(
-            EC.element_to_be_clickable((By.XPATH, report_button_xpath))
+
+        # Calling the click_more_button() method on the self.scam_bait object within this unit test
+        self.scam_bait.click_more_button()
+
+        # Assert that the page was scrolled
+        self.scam_bait.driver.execute_script.assert_called_once_with("window.scrollTo(0, document.body.scrollHeight);")
+
+        # Assert that WebDriverWait was called with correct parameters
+        more_button_xpath = ("//button[contains(@class, 'artdeco-dropdown__trigger') and "
+                             "contains(@class, 'artdeco-button--secondary') and "
+                             "contains(@aria-label, 'More actions')]//span[contains(text(), 'More')]")
+        mock_wait.until.assert_called_once_with(
+            EC.element_to_be_clickable((By.XPATH, more_button_xpath))
         )
-        mock_element.click.assert_called()
-        
+
+        # Assert that the 'More' button was clicked
+        mock_element.click.assert_called_once()
+
+        # Assert that debug_xpath was called
+        mock_debug_xpath.assert_called_with(self.scam_bait.driver, more_button_xpath)
+
         # Assert that the success message was printed
-        mock_print.assert_any_call("'Report or block' option clicked successfully")
-        mock_print.assert_any_call("Fake user reported successfully.")
+        mock_print.assert_called_with("Successfully clicked 'More' button")
+## ---- End of click_more_button method ---- #
+
+       
+## ---- Testing of Error Handling when the More button cannot be located ---- #  
+def test_click_more_button_exception_handling(self):
+    # Mock the WebDriverWait to raise a TimeoutException
+    mock_wait = MagicMock()
+    mock_wait.until.side_effect = TimeoutException("Element not found")
+    
+    self.scam_bait.driver = MagicMock()
+    self.scam_bait.driver.current_url = "https://www.linkedin.com/in/fake-profile"
+    self.scam_bait.driver.page_source = "Mocked page source"
+
+    with patch('scammer_bait.WebDriverWait', return_value=mock_wait), \
+         patch('scammer_bait.debug_xpath') as mock_debug_xpath, \
+         patch('builtins.print') as mock_print:
+
+        self.scam_bait.click_more_button()
+
+        # Assert that the page was scrolled
+        self.scam_bait.driver.execute_script.assert_called_once_with("window.scrollTo(0, document.body.scrollHeight);")
+
+        # Assert that debug_xpath was called
+        mock_debug_xpath.assert_called_once()
+
+        # Assert that the error messages were printed
+        mock_print.assert_any_call("An error occurred while clicking the 'More' button: Element not found")
+        mock_print.assert_any_call("Current URL: https://www.linkedin.com/in/fake-profile")
+        mock_print.assert_any_call("Page source: Mocked page source...")
 
 
 if __name__ == '__main__':
     unittest.main()
+
