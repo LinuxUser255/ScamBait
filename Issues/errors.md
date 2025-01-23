@@ -1,4 +1,4 @@
-# Attempting to click the report user three dot elipsies and submit
+# Attempting to click the `More` button on a user's profile
 
 couldn't click the report user buttons. 
 I didn't get the regex xpath selection quite right.
@@ -24,19 +24,43 @@ The most reoccuring theme.
   https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalid-selector-exception
 ```
 
-## Other than this, everything is working fine!
+## XPath values attempted
 
+`<span>More</span>`
 
-More
+`//*[@id="ember69-profile-overflow-action"]/span`
 
-<span>More</span>
-
-//*[@id="ember69-profile-overflow-action"]/span
-
-report_xpath = '//*[@id="ember76"]/span'
+`report_xpath = '//*[@id="ember76"]/span'`
 
 ```python
 def report_fake_user(self):
 ```
 
-it's clicking the More button, however thats a drop down selection and it's not clicking on the report
+I did get it to click the `More` button once; however, was unsuccsesful on subsequent attempts.
+
+<br>
+
+### Janurary 22 2025
+
+- Attempts to successfully run the `report_fake_user()` method were unsuccessful.
+
+- Unit Test of `report_fake_user()` method : Failed
+
+- Error messages, when running both `scammer_bait.py`, and when running `report-fake-user-function-test.py`:
+```bash
+An error occurred: Message: element not interactable
+
+Login successful.
+Attempting to click 'More' button with XPath: //*[starts-with(@id, 'ember') and contains(@id, '-profile-overflow-action')]
+Found 2 element(s) matching XPath: //*[starts-with(@id, 'ember') and contains(@id, '-profile-overflow-action')]
+Element 1: button
+Element 2: button
+An error occurred while reporting the fake user: Message:
+
+Current URL: https://www.linkedin.com/in/donnie-thompson-b842532a6/
+Page source: <html lang="en" class="theme theme--mercado app-loader--default artdeco"><head>
+    <script nonce="">!function(i,n){void 0!==i.addEventListener&&void 0!==i.hidden&&(n.liVisibilityChangeListener=function(){i.hidden&&(n.liHasWindowHidden=!0)},i.addEventListener("visibilitychange",n.liVisibilityChangeListener))}(document,window);</script>
+    <meta name="trusted-types" content="script-src-attr 'none'; require-trusted-types-for 'script'; trusted-types 'allow-duplicates' default jSecure highcharts do...
+```
+
+
