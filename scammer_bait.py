@@ -13,6 +13,8 @@ import config
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
+from scam_bait_utils import debug_xpath
+
 
 def browser_persist():
     while True:
@@ -51,13 +53,11 @@ class ScamBait:
             print(f"An error occurred during sign-in: {str(e)}")
 
     def get_opentowork_url(self):
-        self.driver.get(config.openToWork)
-        time.sleep(5)
-        print("#opentowork URL...")
+        pass
 
     def find_posts_comments_by_fake_users(self):
-        # On the openToWork page, find a post that has been commented on by a fake user.
         pass
+
 
     def get_fakeuser_url(self):
         with open(os.path.join(os.path.dirname(__file__), "ScamerProfiles/fake_profiles.txt"), 'r') as f:
@@ -69,20 +69,47 @@ class ScamBait:
         else:
             print("No fake profiles found in the file.")
 
+    from scam_bait_utils import debug_xpath
+
+    # Debugging this step
     def report_fake_user(self):
         try:
-            more_button_xpath = '//*[@id="ember69-profile-overflow-action"]/span'
-            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, more_button_xpath))).click()
-
-            triple_dots_xpath = '//*[@id="ember69-profile-overflow-action"]/span/button'
-            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, triple_dots_xpath))).click()
-            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, triple_dots_xpath))).click()
-            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, triple_dots_xpath))).click()
-
-            report_button_xpath = '//*[@id="ember76"]/span'
-            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, report_button_xpath))).click()
+            # Step One: Click the 'More' button
+            more_button_xpath = "//*[starts-with(@id, 'ember') and contains(@id, '-profile-overflow-action')]"
+            print(f"Attempting to click 'More' button with XPath: {more_button_xpath}")
+            
+            # Debug the XPath
+            debug_xpath(self.driver, more_button_xpath)
+            
+            more_button = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, more_button_xpath))
+            )
+            more_button.click()
+            print("'More' button clicked successfully")
+    
+            # Step Two: Wait for the dropdown menu to appear
+            time.sleep(2)
+    
+            # Step Three: Click the 'Report or block' option
+            report_button_xpath = "//div[starts-with(@id, 'ember') and contains(@class, 'artdeco-dropdown__item') and contains(@aria-label, 'Report or block')]"
+            print(f"Attempting to click 'Report or block' option with XPath: {report_button_xpath}")
+            
+            # Debug the XPath
+            debug_xpath(self.driver, report_button_xpath)
+            
+            report_button = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, report_button_xpath))
+            )
+            report_button.click()
+            print("'Report or block' option clicked successfully")
+    
+            print("Fake user reported successfully.")
         except Exception as e:
-            print(f"An error occurred while reporting fake user: {str(e)}")
+            print(f"An error occurred while reporting the fake user: {str(e)}")
+            # Additional debugging information
+            print(f"Current URL: {self.driver.current_url}")
+            print(f"Page source: {self.driver.page_source[:500]}...")  # Print first 500 characters of page source
+
 
     def run_bot(self):
         """The methods are called sequentially."""
@@ -90,7 +117,9 @@ class ScamBait:
         self.get_opentowork_url()
         self.find_posts_comments_by_fake_users()  # This method needs to be implemented
         self.get_fakeuser_url()
-        self.report_fake_user()
+        # self.fakeuser_url()
+        # self.click_more_button()
+        self.report_fake_user()  # Make sure this line is uncommented
         browser_persist()
 
 
